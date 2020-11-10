@@ -57,6 +57,7 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="org.jetbrains.plugins.github.ui.GithubSettingsConfigurable" />
   </component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
@@ -128,22 +129,26 @@
       <screen x="0" y="0" width="3840" height="2078" />
     </state>
     <state x="1360" y="434" width="1901" height="1270" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.3840.2078/3840.0.768.1024@0.0.3840.2078" timestamp="1605034911250" />
-    <state width="3736" height="532" key="GridCell.Tab.0.bottom" timestamp="1605035118842">
+    <state width="3736" height="532" key="GridCell.Tab.0.bottom" timestamp="1605038780664">
       <screen x="0" y="0" width="3840" height="2078" />
     </state>
-    <state width="3736" height="532" key="GridCell.Tab.0.bottom/0.0.3840.2078/3840.0.768.1024@0.0.3840.2078" timestamp="1605035118842" />
-    <state width="3736" height="532" key="GridCell.Tab.0.center" timestamp="1605035118842">
+    <state width="3736" height="532" key="GridCell.Tab.0.bottom/0.0.3840.2078/3840.0.768.1024@0.0.3840.2078" timestamp="1605038780664" />
+    <state width="3736" height="532" key="GridCell.Tab.0.center" timestamp="1605038780664">
       <screen x="0" y="0" width="3840" height="2078" />
     </state>
-    <state width="3736" height="532" key="GridCell.Tab.0.center/0.0.3840.2078/3840.0.768.1024@0.0.3840.2078" timestamp="1605035118842" />
-    <state width="3736" height="532" key="GridCell.Tab.0.left" timestamp="1605035118842">
+    <state width="3736" height="532" key="GridCell.Tab.0.center/0.0.3840.2078/3840.0.768.1024@0.0.3840.2078" timestamp="1605038780664" />
+    <state width="3736" height="532" key="GridCell.Tab.0.left" timestamp="1605038780664">
       <screen x="0" y="0" width="3840" height="2078" />
     </state>
-    <state width="3736" height="532" key="GridCell.Tab.0.left/0.0.3840.2078/3840.0.768.1024@0.0.3840.2078" timestamp="1605035118842" />
-    <state width="3736" height="532" key="GridCell.Tab.0.right" timestamp="1605035118842">
+    <state width="3736" height="532" key="GridCell.Tab.0.left/0.0.3840.2078/3840.0.768.1024@0.0.3840.2078" timestamp="1605038780664" />
+    <state width="3736" height="532" key="GridCell.Tab.0.right" timestamp="1605038780664">
       <screen x="0" y="0" width="3840" height="2078" />
     </state>
-    <state width="3736" height="532" key="GridCell.Tab.0.right/0.0.3840.2078/3840.0.768.1024@0.0.3840.2078" timestamp="1605035118842" />
+    <state width="3736" height="532" key="GridCell.Tab.0.right/0.0.3840.2078/3840.0.768.1024@0.0.3840.2078" timestamp="1605038780664" />
+    <state x="787" y="222" key="SettingsEditor" timestamp="1605038775393">
+      <screen x="0" y="0" width="3840" height="2078" />
+    </state>
+    <state x="787" y="222" key="SettingsEditor/0.0.3840.2078/3840.0.768.1024@0.0.3840.2078" timestamp="1605038775393" />
     <state x="1670" y="848" key="VCS.ChangelistChooser" timestamp="1605035042354">
       <screen x="0" y="0" width="3840" height="2078" />
     </state>
