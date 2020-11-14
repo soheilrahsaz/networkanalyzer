@@ -40,32 +40,36 @@ class AnalyzerUtils {
                         dstIp = ipv4.dstAddr.hostAddress
                         when (ipv4.protocol) {
                             IpNumber.TCP -> {
-                                val tcp = ethernetPacket.get(TcpPacket::class.java).header
-                                srcPort = PortModel(tcp.srcPort.valueAsInt(), tcp.srcPort.name())
-                                dstPort = PortModel(tcp.dstPort.valueAsInt(), tcp.dstPort.name())
-                                extInfo = ""
+                                val tcp = ethernetPacket.get(TcpPacket::class.java)
+                                tcp.header.also {
+                                    srcPort = PortModel(it.srcPort.valueAsInt(), it.srcPort.name())
+                                    dstPort = PortModel(it.dstPort.valueAsInt(), it.dstPort.name())
+                                }
+                                extInfo = tcp.payload.toString()
                             }
                             IpNumber.UDP -> {
-                                val udp = ethernetPacket.get(UdpPacket::class.java).header
-                                srcPort = PortModel(udp.srcPort.valueAsInt(), udp.srcPort.name())
-                                dstPort = PortModel(udp.dstPort.valueAsInt(), udp.dstPort.name())
-                                extInfo = ""
+                                val udp = ethernetPacket.get(UdpPacket::class.java)
+                                udp.header.also {
+                                    srcPort = PortModel(it.srcPort.valueAsInt(), it.srcPort.name())
+                                    dstPort = PortModel(it.dstPort.valueAsInt(), it.dstPort.name())
+                                }
+                                extInfo = udp.payload.toString()
                             }
                             IpNumber.ICMPV4 -> {
-                                val icmp = ethernetPacket.get(IcmpV4CommonPacket::class.java).header
+                                val icmp = ethernetPacket.get(IcmpV4CommonPacket::class.java)
                                 srcPort = null
                                 dstPort = null
-                                extInfo = "${icmp.type} / ${icmp.code}"
+                                extInfo = "type: ${icmp.header.type} / code: ${icmp.header.code}\n${icmp.payload}"
                             }
                             IpNumber.IGMP -> {
                                 srcPort = null
                                 dstPort = null
-                                extInfo = ""
+                                extInfo = ethernetPacket.payload.toString()
                             }
                             else -> {
                                 srcPort = null
                                 dstPort = null
-                                extInfo = ""
+                                extInfo = ethernetPacket.payload.toString()
                             }
                         }
                     }
@@ -76,38 +80,42 @@ class AnalyzerUtils {
                         dstIp = ipv6.dstAddr.hostAddress
                         when (ipv6.protocol) {
                             IpNumber.TCP -> {
-                                val tcp = ethernetPacket.get(TcpPacket::class.java).header
-                                srcPort = PortModel(tcp.srcPort.valueAsInt(), tcp.srcPort.name())
-                                dstPort = PortModel(tcp.dstPort.valueAsInt(), tcp.dstPort.name())
-                                extInfo = ""
+                                val tcp = ethernetPacket.get(TcpPacket::class.java)
+                                tcp.header.also {
+                                    srcPort = PortModel(it.srcPort.valueAsInt(), it.srcPort.name())
+                                    dstPort = PortModel(it.dstPort.valueAsInt(), it.dstPort.name())
+                                }
+                                extInfo = tcp.payload.toString()
                             }
                             IpNumber.UDP -> {
-                                val udp = ethernetPacket.get(UdpPacket::class.java).header
-                                srcPort = PortModel(udp.srcPort.valueAsInt(), udp.srcPort.name())
-                                dstPort = PortModel(udp.dstPort.valueAsInt(), udp.dstPort.name())
-                                extInfo = ""
+                                val udp = ethernetPacket.get(UdpPacket::class.java)
+                                udp.header.also {
+                                    srcPort = PortModel(it.srcPort.valueAsInt(), it.srcPort.name())
+                                    dstPort = PortModel(it.dstPort.valueAsInt(), it.dstPort.name())
+                                }
+                                extInfo = udp.payload.toString()
                             }
                             IpNumber.ICMPV6 -> {
-                                val icmp = ethernetPacket.get(IcmpV6CommonPacket::class.java).header
+                                val icmp = ethernetPacket.get(IcmpV6CommonPacket::class.java)
                                 srcPort = null
                                 dstPort = null
-                                extInfo = "${icmp.type} / ${icmp.code}"
+                                extInfo = "type: ${icmp.header.type} / code: ${icmp.header.code}\n${icmp.payload}"
                             }
                             else -> {
                                 srcPort = null
                                 dstPort = null
-                                extInfo = ""
+                                extInfo = ethernetPacket.payload.toString()
                             }
                         }
                     }
                     EtherType.ARP -> {
                         protocol = EtherType.ARP.name()
-                        val arp = ethernetPacket.get(ArpPacket::class.java).header
-                        srcIp = arp.srcProtocolAddr.hostAddress
-                        dstIp = arp.dstProtocolAddr.hostAddress
+                        val arp = ethernetPacket.get(ArpPacket::class.java)
+                        srcIp = arp.header.srcProtocolAddr.hostAddress
+                        dstIp = arp.header.dstProtocolAddr.hostAddress
                         srcPort = null
                         dstPort = null
-                        extInfo = "operation: ${arp.operation.name()}"
+                        extInfo = "operation: ${arp.header.operation.name()}\n${arp.payload}"
                     }
 //                    EtherType.RARP -> {
 //                    }
@@ -124,12 +132,12 @@ class AnalyzerUtils {
 //                    EtherType.PPPOE_SESSION_STAGE -> {
 //                    }
                     else -> {
-                        protocol = EtherType.ARP.name()
+                        protocol = ethernetPacket.header.type.name()
                         srcIp = ""
                         dstIp = ""
                         srcPort = null
                         dstPort = null
-                        extInfo = ""
+                        extInfo = ethernetPacket.toString()
                     }
                 }
                 return PacketModel(
