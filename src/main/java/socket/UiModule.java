@@ -52,5 +52,7 @@ public class UiModule {
     //Server methods
     public void sendRecord(PacketModel packetModel) {
         String rawJson = gson.toJson(packetModel);
+        System.out.println(packetModel);
+        System.out.println("**********************");
     }
 }

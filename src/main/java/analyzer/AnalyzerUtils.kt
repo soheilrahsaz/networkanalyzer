@@ -21,8 +21,8 @@ class AnalyzerUtils {
                 val date = getTime()
                 val size = length()
                 val descriptor = toString()
-                val srcMac = ethernetPacket.header.srcAddr.toString()
-                val dstMac = ethernetPacket.header.dstAddr.toString()
+                var srcMac = ethernetPacket.header.srcAddr.toString()
+                var dstMac = ethernetPacket.header.dstAddr.toString()
 
                 val protocol: String
                 val srcIp: String
@@ -34,13 +34,15 @@ class AnalyzerUtils {
 
                 when (ethernetPacket.header.type) {
                     EtherType.IPV4 -> {
-                        val ipv4 = ethernetPacket.get(IpV4Packet::class.java).header
-                        protocol = ipv4.protocol.name()
-                        srcIp = ipv4.srcAddr.hostAddress
-                        dstIp = ipv4.dstAddr.hostAddress
-                        when (ipv4.protocol) {
+                        val ipv4 = ethernetPacket.payload.get(IpV4Packet::class.java)
+                        ipv4.header.also {
+                            protocol = it.protocol.name()
+                            srcIp = it.srcAddr.hostAddress
+                            dstIp = it.dstAddr.hostAddress
+                        }
+                        when (ipv4.header.protocol) {
                             IpNumber.TCP -> {
-                                val tcp = ethernetPacket.get(TcpPacket::class.java)
+                                val tcp = ipv4.payload.get(TcpPacket::class.java)
                                 tcp.header.also {
                                     srcPort = PortModel(it.srcPort.valueAsInt(), it.srcPort.name())
                                     dstPort = PortModel(it.dstPort.valueAsInt(), it.dstPort.name())
@@ -48,7 +50,7 @@ class AnalyzerUtils {
                                 extInfo = tcp.payload.toString()
                             }
                             IpNumber.UDP -> {
-                                val udp = ethernetPacket.get(UdpPacket::class.java)
+                                val udp = ipv4.payload.get(UdpPacket::class.java)
                                 udp.header.also {
                                     srcPort = PortModel(it.srcPort.valueAsInt(), it.srcPort.name())
                                     dstPort = PortModel(it.dstPort.valueAsInt(), it.dstPort.name())
@@ -56,7 +58,7 @@ class AnalyzerUtils {
                                 extInfo = udp.payload.toString()
                             }
                             IpNumber.ICMPV4 -> {
-                                val icmp = ethernetPacket.get(IcmpV4CommonPacket::class.java)
+                                val icmp = ipv4.payload.get(IcmpV4CommonPacket::class.java)
                                 srcPort = null
                                 dstPort = null
                                 extInfo = "type: ${icmp.header.type} / code: ${icmp.header.code}\n${icmp.payload}"
@@ -64,23 +66,25 @@ class AnalyzerUtils {
                             IpNumber.IGMP -> {
                                 srcPort = null
                                 dstPort = null
-                                extInfo = ethernetPacket.payload.toString()
+                                extInfo = ipv4.payload.toString()
                             }
                             else -> {
                                 srcPort = null
                                 dstPort = null
-                                extInfo = ethernetPacket.payload.toString()
+                                extInfo = ipv4.payload.toString()
                             }
                         }
                     }
                     EtherType.IPV6 -> {
-                        val ipv6 = ethernetPacket.get(IpV6Packet::class.java).header
-                        protocol = ipv6.protocol.name()
-                        srcIp = ipv6.srcAddr.hostAddress
-                        dstIp = ipv6.dstAddr.hostAddress
-                        when (ipv6.protocol) {
+                        val ipv6 = ethernetPacket.payload.get(IpV6Packet::class.java)
+                        ipv6.header.also {
+                            protocol = it.protocol.name()
+                            srcIp = it.srcAddr.hostAddress
+                            dstIp = it.dstAddr.hostAddress
+                        }
+                        when (ipv6.header.protocol) {
                             IpNumber.TCP -> {
-                                val tcp = ethernetPacket.get(TcpPacket::class.java)
+                                val tcp = ipv6.payload.get(TcpPacket::class.java)
                                 tcp.header.also {
                                     srcPort = PortModel(it.srcPort.valueAsInt(), it.srcPort.name())
                                     dstPort = PortModel(it.dstPort.valueAsInt(), it.dstPort.name())
@@ -88,7 +92,7 @@ class AnalyzerUtils {
                                 extInfo = tcp.payload.toString()
                             }
                             IpNumber.UDP -> {
-                                val udp = ethernetPacket.get(UdpPacket::class.java)
+                                val udp = ipv6.payload.get(UdpPacket::class.java)
                                 udp.header.also {
                                     srcPort = PortModel(it.srcPort.valueAsInt(), it.srcPort.name())
                                     dstPort = PortModel(it.dstPort.valueAsInt(), it.dstPort.name())
@@ -96,7 +100,7 @@ class AnalyzerUtils {
                                 extInfo = udp.payload.toString()
                             }
                             IpNumber.ICMPV6 -> {
-                                val icmp = ethernetPacket.get(IcmpV6CommonPacket::class.java)
+                                val icmp = ipv6.payload.get(IcmpV6CommonPacket::class.java)
                                 srcPort = null
                                 dstPort = null
                                 extInfo = "type: ${icmp.header.type} / code: ${icmp.header.code}\n${icmp.payload}"
@@ -104,15 +108,19 @@ class AnalyzerUtils {
                             else -> {
                                 srcPort = null
                                 dstPort = null
-                                extInfo = ethernetPacket.payload.toString()
+                                extInfo = ipv6.payload.toString()
                             }
                         }
                     }
                     EtherType.ARP -> {
                         protocol = EtherType.ARP.name()
-                        val arp = ethernetPacket.get(ArpPacket::class.java)
-                        srcIp = arp.header.srcProtocolAddr.hostAddress
-                        dstIp = arp.header.dstProtocolAddr.hostAddress
+                        val arp = ethernetPacket.payload.get(ArpPacket::class.java)
+                        arp.header.also {
+                            srcIp = it.srcProtocolAddr.hostAddress
+                            srcMac = it.srcHardwareAddr.toString()
+                            dstIp = it.dstProtocolAddr.hostAddress
+                            dstMac = it.dstHardwareAddr.toString()
+                        }
                         srcPort = null
                         dstPort = null
                         extInfo = "operation: ${arp.header.operation.name()}\n${arp.payload}"
