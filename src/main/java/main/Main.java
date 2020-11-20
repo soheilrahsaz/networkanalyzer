@@ -1,5 +1,6 @@
 package main;
 
+import org.pcap4j.core.NotOpenException;
 import org.pcap4j.core.PcapNativeException;
 import org.pcap4j.core.PcapNetworkInterface;
 import org.pcap4j.core.Pcaps;
@@ -11,7 +12,7 @@ public class Main {
         try {
             PcapNetworkInterface networkInterface = Pcaps.findAllDevs().get(0);
             uiModule.startAnalyze(networkInterface.getName());
-        } catch (PcapNativeException e) {
+        } catch (PcapNativeException | InterruptedException | NotOpenException e) {
             e.printStackTrace();
         }
     }
