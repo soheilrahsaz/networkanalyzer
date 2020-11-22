@@ -38,6 +38,7 @@ public class AnalyzerUtils {
             String protocol;
             String srcIp;
             String dstIp;
+            int ipVersion = 0;
 
             PortModel srcPort;
             PortModel dstPort;
@@ -46,6 +47,7 @@ public class AnalyzerUtils {
             if (EtherType.IPV4.equals(ethernetPacket.getHeader().getType())) {
                 IpV4Packet ipv4 = ethernetPacket.getPayload().get(IpV4Packet.class);
                 protocol = ipv4.getHeader().getProtocol().name();
+                ipVersion = 4;
                 srcIp = ipv4.getHeader().getSrcAddr().getHostAddress();
                 dstIp = ipv4.getHeader().getDstAddr().getHostAddress();
                 if (IpNumber.TCP.equals(ipv4.getHeader().getProtocol())) {
@@ -76,6 +78,7 @@ public class AnalyzerUtils {
             } else if (EtherType.IPV6.equals(ethernetPacket.getHeader().getType())) {
                 IpV6Packet ipv6 = ethernetPacket.getPayload().get(IpV6Packet.class);
                 protocol = ipv6.getHeader().getProtocol().name();
+                ipVersion = 6;
                 srcIp = ipv6.getHeader().getSrcAddr().getHostAddress();
                 dstIp = ipv6.getHeader().getDstAddr().getHostAddress();
                 if (IpNumber.TCP.equals(ipv6.getHeader().getProtocol())) {
@@ -101,6 +104,7 @@ public class AnalyzerUtils {
             } else if (EtherType.ARP.equals(ethernetPacket.getHeader().getType())) {
                 protocol = EtherType.ARP.name();
                 ArpPacket arp = ethernetPacket.getPayload().get(ArpPacket.class);
+                ipVersion = arp.getHeader().getSrcProtocolAddr().getAddress().length == 4 ? 4 : 6;
                 srcIp = arp.getHeader().getSrcProtocolAddr().getHostAddress();
                 srcMac = arp.getHeader().getSrcHardwareAddr().toString();
                 dstIp = arp.getHeader().getDstProtocolAddr().getHostAddress();
@@ -117,6 +121,7 @@ public class AnalyzerUtils {
 //            } else if (EtherType.PPPOE_SESSION_STAGE.equals(ethernetPacket.getHeader().getType())) {
             } else {
                 protocol = ethernetPacket.getHeader().getType().name();
+                ipVersion = 0;
                 srcIp = "";
                 dstIp = "";
                 srcPort = null;
@@ -129,6 +134,7 @@ public class AnalyzerUtils {
                     size,
                     protocol,
                     srcMac,
+                    ipVersion,
                     srcIp,
                     srcPort,
                     dstMac,
