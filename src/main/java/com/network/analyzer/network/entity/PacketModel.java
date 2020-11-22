@@ -10,8 +10,8 @@ public class PacketModel {
     public long date;
     public int size;
     public String protocol;
-    public String srcMac;
     public int ipVersion;
+    public String srcMac;
     public String srcIp;
     public PortModel srcPort;
     public String dstMac;
