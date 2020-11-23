@@ -18,17 +18,17 @@ public class WebSocketController {
         this.template = template;
     }
 
-    @MessageMapping("/network")
-    @SendTo("/network/packet")
-    public ChatMessage greeting(ChatMessage message) throws Exception {
-        return new ChatMessage("Server", RandomStringUtils.randomAlphanumeric(10));
-    }
-
-    @Scheduled(fixedRate = 500)
-    public void test()
-    {
-        template.convertAndSend("/network/packet", new ChatMessage("Server", RandomStringUtils.randomAlphanumeric(10)));
-    }
+//    @MessageMapping("/network")
+//    @SendTo("/network/packet")
+//    public ChatMessage greeting(ChatMessage message) throws Exception {
+//        return new ChatMessage("Server", RandomStringUtils.randomAlphanumeric(10));
+//    }
+//
+//    @Scheduled(fixedRate = 500)
+//    public void test()
+//    {
+//        template.convertAndSend("/network/packet", new ChatMessage("Ser ver", RandomStringUtils.randomAlphanumeric(10)));
+//    }
 
 
     public void sendPacket(PacketModel packetModel)
