@@ -21,7 +21,7 @@ public class NetworkAnalyzer implements PacketListener {
         analyzeHandler = networkInterface.openLive(SNAP_LEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, TIME_OUT);
         uiModule = UiModule.getINSTANCE();
         recordedPackets = new ArrayList<>();
-        idBase = 0;
+        idBase = 1;
     }
 
     public void start() throws PcapNativeException, InterruptedException, NotOpenException {
@@ -38,7 +38,7 @@ public class NetworkAnalyzer implements PacketListener {
         }
         analyzeHandler.close();
         recordedPackets.clear();
-        idBase = 0;
+        idBase = 1;
     }
 
     @Override

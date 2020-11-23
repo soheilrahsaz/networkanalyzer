@@ -54,26 +54,26 @@ public class AnalyzerUtils {
                     TcpPacket tcp = ipv4.getPayload().get(TcpPacket.class);
                     srcPort = new PortModel(tcp.getHeader().getSrcPort().valueAsInt(), tcp.getHeader().getSrcPort().name());
                     dstPort = new PortModel(tcp.getHeader().getDstPort().valueAsInt(), tcp.getHeader().getDstPort().name());
-                    extInfo = Objects.toString(tcp.getPayload());
+                    extInfo = "";
                 } else if (IpNumber.UDP.equals(ipv4.getHeader().getProtocol())) {
                     UdpPacket udp = ipv4.getPayload().get(UdpPacket.class);
                     srcPort = new PortModel(udp.getHeader().getSrcPort().valueAsInt(), udp.getHeader().getSrcPort().name());
                     dstPort = new PortModel(udp.getHeader().getDstPort().valueAsInt(), udp.getHeader().getDstPort().name());
-                    extInfo = udp.getPayload().toString();
+                    extInfo = "";
                 } else if (IpNumber.ICMPV4.equals(ipv4.getHeader().getProtocol())) {
                     IcmpV4CommonPacket icmp = ipv4.getPayload().get(IcmpV4CommonPacket.class);
                     srcPort = null;
                     dstPort = null;
-                    extInfo = "type: " + icmp.getHeader().getType().toString() + " / code: " + icmp.getHeader().getCode().toString() + "\n" + icmp.getPayload().toString();
+                    extInfo = "type: " + icmp.getHeader().getType().toString() + " / code: " + icmp.getHeader().getCode().toString();
                 } else if (IpNumber.IGMP.equals(ipv4.getHeader().getProtocol())) {
                     //TODO: Find new way to handle IGMP packets
                     srcPort = null;
                     dstPort = null;
-                    extInfo = ipv4.getPayload().toString();
+                    extInfo = "";
                 } else {
                     srcPort = null;
                     dstPort = null;
-                    extInfo = ipv4.getPayload().toString();
+                    extInfo = "";
                 }
             } else if (EtherType.IPV6.equals(ethernetPacket.getHeader().getType())) {
                 IpV6Packet ipv6 = ethernetPacket.getPayload().get(IpV6Packet.class);
@@ -85,21 +85,21 @@ public class AnalyzerUtils {
                     TcpPacket tcp = ipv6.getPayload().get(TcpPacket.class);
                     srcPort = new PortModel(tcp.getHeader().getSrcPort().valueAsInt(), tcp.getHeader().getSrcPort().name());
                     dstPort = new PortModel(tcp.getHeader().getDstPort().valueAsInt(), tcp.getHeader().getDstPort().name());
-                    extInfo = tcp.getPayload().toString();
+                    extInfo = "";
                 } else if (IpNumber.UDP.equals(ipv6.getHeader().getProtocol())) {
                     UdpPacket udp = ipv6.getPayload().get(UdpPacket.class);
                     srcPort = new PortModel(udp.getHeader().getSrcPort().valueAsInt(), udp.getHeader().getSrcPort().name());
                     dstPort = new PortModel(udp.getHeader().getDstPort().valueAsInt(), udp.getHeader().getDstPort().name());
-                    extInfo = udp.getPayload().toString();
+                    extInfo = "";
                 } else if (IpNumber.ICMPV6.equals(ipv6.getHeader().getProtocol())) {
                     IcmpV6CommonPacket icmp = ipv6.getPayload().get(IcmpV6CommonPacket.class);
                     srcPort = null;
                     dstPort = null;
-                    extInfo = "type: " + icmp.getHeader().getType().toString() + " / code: " + icmp.getHeader().getCode().toString() + "\n" + icmp.getPayload().toString();
+                    extInfo = "type: " + icmp.getHeader().getType().toString() + " / code: " + icmp.getHeader().getCode().toString();
                 } else {
                     srcPort = null;
                     dstPort = null;
-                    extInfo = ipv6.getPayload().toString();
+                    extInfo = "";
                 }
             } else if (EtherType.ARP.equals(ethernetPacket.getHeader().getType())) {
                 protocol = EtherType.ARP.name();
@@ -111,7 +111,7 @@ public class AnalyzerUtils {
                 dstMac = arp.getHeader().getDstHardwareAddr().toString();
                 srcPort = null;
                 dstPort = null;
-                extInfo = "operation: " + arp.getHeader().getOperation().name() + "\n" + arp.getPayload();
+                extInfo = "operation: " + arp.getHeader().getOperation().name();
 //            } else if (EtherType.RARP.equals(ethernetPacket.getHeader().getType())) {
 //            } else if (EtherType.DOT1Q_VLAN_TAGGED_FRAMES.equals(ethernetPacket.getHeader().getType())) {
 //            } else if (EtherType.APPLETALK.equals(ethernetPacket.getHeader().getType())) {
@@ -126,7 +126,7 @@ public class AnalyzerUtils {
                 dstIp = "";
                 srcPort = null;
                 dstPort = null;
-                extInfo = ethernetPacket.toString();
+                extInfo = "";
             }
             return new PacketModel(
                     id,
