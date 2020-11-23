@@ -10,12 +10,14 @@ import org.pcap4j.packet.*;
 import org.pcap4j.packet.namednumber.EtherType;
 import org.pcap4j.packet.namednumber.IpNumber;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 public class AnalyzerUtils {
+    public static DateFormat dateFormat = DateFormat.getInstance();
+
     public static List<InterfaceModel> getAllNetworkInterfacesName() throws PcapNativeException {
         List<PcapNetworkInterface> allInterFace = Pcaps.findAllDevs();
         List<InterfaceModel> interfaceModels = new ArrayList<>();
@@ -29,7 +31,7 @@ public class AnalyzerUtils {
     public static PacketModel convert(Packet packet, long id) {
         if (packet.contains(EthernetPacket.class)) {
             EthernetPacket ethernetPacket = packet.get(EthernetPacket.class);
-            long date = getTime();
+            String date = getTime();
             int size = packet.length();
             String descriptor = packet.toString();
             String srcMac = ethernetPacket.getHeader().getSrcAddr().toString();
@@ -147,7 +149,7 @@ public class AnalyzerUtils {
         return null;
     }
 
-    private static long getTime() {
-        return new Date().getTime();
+    private static String getTime() {
+        return dateFormat.format(new Date());
     }
 }
