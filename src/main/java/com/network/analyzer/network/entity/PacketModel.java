@@ -7,6 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class PacketModel {
     public long id;
+    public int type;
     public String date;
     public int size;
     public String protocol;

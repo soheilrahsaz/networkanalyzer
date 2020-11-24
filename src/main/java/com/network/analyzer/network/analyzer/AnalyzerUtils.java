@@ -28,7 +28,7 @@ public class AnalyzerUtils {
         return interfaceModels;
     }
 
-    public static PacketModel convert(Packet packet, long id) {
+    public static PacketModel convert(Packet packet, long id, String interfaceMacAddress) {
         if (packet.contains(EthernetPacket.class)) {
             EthernetPacket ethernetPacket = packet.get(EthernetPacket.class);
             String date = getTime();
@@ -36,7 +36,17 @@ public class AnalyzerUtils {
             String descriptor = packet.toString();
             String srcMac = ethernetPacket.getHeader().getSrcAddr().toString();
             String dstMac = ethernetPacket.getHeader().getDstAddr().toString();
-
+            int type;
+            if (interfaceMacAddress.isEmpty()) {
+                // Unknown interfaceMacAddress
+                type = 0;
+            } else if (srcMac.toLowerCase().equals(interfaceMacAddress)) {
+                // Output
+                type = 1;
+            } else {
+                // Input
+                type = -1;
+            }
             String protocol;
             String srcIp;
             String dstIp;
@@ -132,6 +142,7 @@ public class AnalyzerUtils {
             }
             return new PacketModel(
                     id,
+                    type,
                     date,
                     size,
                     protocol,
