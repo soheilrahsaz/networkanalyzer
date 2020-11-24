@@ -56,12 +56,12 @@ public class AnalyzerUtils {
                     TcpPacket tcp = ipv4.getPayload().get(TcpPacket.class);
                     srcPort = new PortModel(tcp.getHeader().getSrcPort().valueAsInt(), tcp.getHeader().getSrcPort().name());
                     dstPort = new PortModel(tcp.getHeader().getDstPort().valueAsInt(), tcp.getHeader().getDstPort().name());
-                    extInfo = "";
+                    extInfo = getExtInfo(srcPort, dstPort);
                 } else if (IpNumber.UDP.equals(ipv4.getHeader().getProtocol())) {
                     UdpPacket udp = ipv4.getPayload().get(UdpPacket.class);
                     srcPort = new PortModel(udp.getHeader().getSrcPort().valueAsInt(), udp.getHeader().getSrcPort().name());
                     dstPort = new PortModel(udp.getHeader().getDstPort().valueAsInt(), udp.getHeader().getDstPort().name());
-                    extInfo = "";
+                    extInfo = getExtInfo(srcPort, dstPort);
                 } else if (IpNumber.ICMPV4.equals(ipv4.getHeader().getProtocol())) {
                     IcmpV4CommonPacket icmp = ipv4.getPayload().get(IcmpV4CommonPacket.class);
                     srcPort = null;
@@ -87,12 +87,12 @@ public class AnalyzerUtils {
                     TcpPacket tcp = ipv6.getPayload().get(TcpPacket.class);
                     srcPort = new PortModel(tcp.getHeader().getSrcPort().valueAsInt(), tcp.getHeader().getSrcPort().name());
                     dstPort = new PortModel(tcp.getHeader().getDstPort().valueAsInt(), tcp.getHeader().getDstPort().name());
-                    extInfo = "";
+                    extInfo = getExtInfo(srcPort, dstPort);
                 } else if (IpNumber.UDP.equals(ipv6.getHeader().getProtocol())) {
                     UdpPacket udp = ipv6.getPayload().get(UdpPacket.class);
                     srcPort = new PortModel(udp.getHeader().getSrcPort().valueAsInt(), udp.getHeader().getSrcPort().name());
                     dstPort = new PortModel(udp.getHeader().getDstPort().valueAsInt(), udp.getHeader().getDstPort().name());
-                    extInfo = "";
+                    extInfo = getExtInfo(srcPort, dstPort);
                 } else if (IpNumber.ICMPV6.equals(ipv6.getHeader().getProtocol())) {
                     IcmpV6CommonPacket icmp = ipv6.getPayload().get(IcmpV6CommonPacket.class);
                     srcPort = null;
@@ -151,5 +151,21 @@ public class AnalyzerUtils {
 
     private static String getTime() {
         return dateFormat.format(new Date());
+    }
+
+    private static String getExtInfo(PortModel srcPort, PortModel dstPort) {
+        String extInfo;
+        if (validatePortName(srcPort.name)) {
+            extInfo = srcPort.name;
+        } else if (validatePortName(dstPort.name)) {
+            extInfo = dstPort.name;
+        } else {
+            extInfo = "";
+        }
+        return extInfo;
+    }
+
+    private static boolean validatePortName(String portName) {
+        return portName != null && !portName.isEmpty() && !portName.isBlank() && !portName.equals("unknown");
     }
 }
