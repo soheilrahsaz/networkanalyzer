@@ -4,6 +4,7 @@ import com.network.analyzer.network.entity.PacketModel;
 import com.network.analyzer.network.socket.UiModule;
 import org.pcap4j.core.*;
 import org.pcap4j.packet.Packet;
+import org.pcap4j.util.LinkLayerAddress;
 
 import java.util.ArrayList;
 
@@ -14,10 +15,17 @@ public class NetworkAnalyzer implements PacketListener {
     private final UiModule uiModule;
     private final ArrayList<RecordedPacket> recordedPackets;
     private long idBase;
+    private String interfaceMacAddress;
 
     public NetworkAnalyzer(PcapNetworkInterface networkInterface) throws PcapNativeException {
         int SNAP_LEN = 64 * 1024;
         int TIME_OUT = 10;
+        ArrayList<LinkLayerAddress> linkLayerAddresses = networkInterface.getLinkLayerAddresses();
+        if (!linkLayerAddresses.isEmpty()) {
+            interfaceMacAddress = linkLayerAddresses.get(0).toString().toLowerCase();
+        } else {
+            interfaceMacAddress = "";
+        }
         analyzeHandler = networkInterface.openLive(SNAP_LEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, TIME_OUT);
         uiModule = UiModule.getINSTANCE();
         recordedPackets = new ArrayList<>();
@@ -46,7 +54,7 @@ public class NetworkAnalyzer implements PacketListener {
         if (packet == null) {
             return;
         }
-        PacketModel packetModel = AnalyzerUtils.convert(packet, idBase++);
+        PacketModel packetModel = AnalyzerUtils.convert(packet, idBase++, interfaceMacAddress);
         if (packetModel != null) {
             recordedPackets.add(new RecordedPacket(packetModel.id, packet));
             uiModule.sendRecord(packetModel);
