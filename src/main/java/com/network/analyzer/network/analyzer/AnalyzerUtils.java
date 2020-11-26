@@ -11,12 +11,13 @@ import org.pcap4j.packet.namednumber.EtherType;
 import org.pcap4j.packet.namednumber.IpNumber;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class AnalyzerUtils {
-    public static DateFormat dateFormat = DateFormat.getInstance();
+    public static DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
     public static List<InterfaceModel> getAllNetworkInterfacesName() throws PcapNativeException {
         List<PcapNetworkInterface> allInterFace = Pcaps.findAllDevs();
