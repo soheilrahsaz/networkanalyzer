@@ -13,9 +13,8 @@ public class NetworkAnalyzer implements PacketListener {
 
     private final PcapHandle analyzeHandler;
     private final UiModule uiModule;
-    private final ArrayList<RecordedPacket> recordedPackets;
     private long idBase;
-    private String interfaceMacAddress;
+    private final String interfaceMacAddress;
 
     public NetworkAnalyzer(PcapNetworkInterface networkInterface) throws PcapNativeException {
         int SNAP_LEN = 64 * 1024;
@@ -28,7 +27,6 @@ public class NetworkAnalyzer implements PacketListener {
         }
         analyzeHandler = networkInterface.openLive(SNAP_LEN, PcapNetworkInterface.PromiscuousMode.PROMISCUOUS, TIME_OUT);
         uiModule = UiModule.getINSTANCE();
-        recordedPackets = new ArrayList<>();
         idBase = 1;
     }
 
@@ -45,7 +43,6 @@ public class NetworkAnalyzer implements PacketListener {
             analyzeHandler.breakLoop();
         }
         analyzeHandler.close();
-        recordedPackets.clear();
         idBase = 1;
     }
 
@@ -56,20 +53,7 @@ public class NetworkAnalyzer implements PacketListener {
         }
         PacketModel packetModel = AnalyzerUtils.convert(packet, idBase++, interfaceMacAddress);
         if (packetModel != null) {
-            recordedPackets.add(new RecordedPacket(packetModel.id, packet));
             uiModule.sendRecord(packetModel);
-        } else {
-            recordedPackets.add(new RecordedPacket(null, packet));
-        }
-    }
-
-    static class RecordedPacket {
-        public Packet packet;
-        public Long id;
-
-        public RecordedPacket(Long id, Packet packet) {
-            this.id = id;
-            this.packet = packet;
         }
     }
 }

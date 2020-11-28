@@ -117,7 +117,11 @@ public class AnalyzerUtils {
             } else if (EtherType.ARP.equals(ethernetPacket.getHeader().getType())) {
                 protocol = EtherType.ARP.name();
                 ArpPacket arp = ethernetPacket.getPayload().get(ArpPacket.class);
-                ipVersion = arp.getHeader().getSrcProtocolAddr().getAddress().length == 4 ? 4 : 6;
+                if (arp.getHeader().getProtocolType() == EtherType.IPV4) {
+                    ipVersion = 4;
+                } else {
+                    ipVersion = 6;
+                }
                 srcIp = arp.getHeader().getSrcProtocolAddr().getHostAddress();
                 srcMac = arp.getHeader().getSrcHardwareAddr().toString();
                 dstIp = arp.getHeader().getDstProtocolAddr().getHostAddress();
